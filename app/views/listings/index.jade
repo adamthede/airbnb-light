@@ -1,0 +1,35 @@
+extends ../shared/template
+
+block content
+  h1= title
+  #map
+
+  button.small.radius#search(style='display:none;') Search by Location
+
+  script.
+    var places = [];
+
+  .row
+    label &nbsp
+
+  table
+    thead
+      tr
+        th Name
+        th Address
+    tbody
+      each listing in listings
+        tr
+          td= listing.name
+          td= listing.address
+          script.
+            var place = {};
+            place.name = '#{listing.name}';
+            place.lat = #{listing.coordinates[0]};
+            place.lng = #{listing.coordinates[1]};
+            place.amount = #{listing.amount};
+            place.address = '#{listing.address}';
+            places.push(place);
+
+block scripts
+  script(src='/js/source/listings.js')
