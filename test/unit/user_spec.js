@@ -29,9 +29,9 @@ describe('User', function(){
 
   describe('new', function(){
     it('should create a new User object', function(){
-      var u1 = new User({role:'host', email:'bob@nomail.com', password:'1234'});
+      var u1 = new User({role:'host', email:'athede@nomail.com', password:'1234'});
       expect(u1).to.be.instanceof(User);
-      expect(u1.email).to.equal('bob@nomail.com');
+      expect(u1.email).to.equal('athede@nomail.com');
       expect(u1.password).to.equal('1234');
       expect(u1.role).to.equal('host');
     });
@@ -49,7 +49,8 @@ describe('User', function(){
         done();
       });
     });
-    it('should not register a new User', function(done){
+
+    it('should not register a new User if email already exists', function(done){
       var u1 = new User({role:'guest', email:'bob@nomail.com', password:'1234'});
       u1.register(function(err){
         expect(u1._id).to.be.undefined;
@@ -58,5 +59,36 @@ describe('User', function(){
     });
   });
 
-});
+  describe('.findByEmailAndPassword', function(){
+    it('should find a user by email and password', function(done){
+      var u1 = new User({role:'Host', email:'athede@nomail.com', password:'1234'});
+      u1.register(function(){
+        User.findByEmailAndPassword('athede@nomail.com', '1234', function(record){
+          expect(record.email).to.equal('athede@nomail.com');
+          expect(record.password).to.not.equal('1234');
+          done();
+        });
+      });
+    });
 
+    it('should not allow an incorrect email', function(done){
+      var u1 = new User({role:'Host', email:'athede@nomail.com', password:'1234'});
+      u1.register(function(){
+        User.findByEmailAndPassword('charles@nomail.com', '1234', function(record){
+          expect(record).to.be.null;
+          done();
+        });
+      });
+    });
+
+    it('should not allow an incorrect password', function(done){
+      var u1 = new User({role:'Host', email:'athede@nomail.com', password:'1234'});
+      u1.register(function(){
+        User.findByEmailAndPassword('athede@nomail.com', '1235', function(record){
+          expect(record).to.be.null;
+          done();
+        });
+      });
+    });
+  });
+});

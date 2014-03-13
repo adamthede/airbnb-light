@@ -68,4 +68,43 @@ describe('user', function(){
       });
     });
   });
+
+  describe('GET /login', function(){
+    it('should pull up the login screen', function(done){
+      request(app)
+      .get('/login')
+      .end(function(err, res){
+        expect(res.status).to.equal(200);
+        expect(res.text).to.include('Login');
+        done();
+      });
+    });
+  });
+
+  describe('POST /login', function(){
+    it('should log a user in', function(done){
+      request(app)
+      .post('/login')
+      .field('email', 'athede@nomail.com')
+      .field('password', '1234')
+      .end(function(err, res){
+        expect(res.status).to.equal(302);
+        expect(res.text).to.include('Moved Temporarily');
+        done();
+      });
+    });
+
+    it('should not log in a nonexisting user', function(done){
+      request(app)
+      .post('/login')
+      .field('email', 'sam@nomail.com')
+      .field('password', '1234')
+      .end(function(err, res){
+        expect(res.status).to.equal(200);
+        expect(res.text).to.include('Login');
+        done();
+      });
+    });
+  });
+
 });

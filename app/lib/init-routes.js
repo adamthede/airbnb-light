@@ -19,6 +19,8 @@ function load(app, fn){
   app.get('/', d, home.index);
   app.get('/register', d, users.register);
   app.post('/register', d, users.create);
+  app.get('/login', d, users.login);
+  app.post('/login', d, users.auth);
   console.log('Routes Loaded');
   fn();
 }
